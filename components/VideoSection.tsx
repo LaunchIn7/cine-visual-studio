@@ -1,96 +1,77 @@
-// 'use client';
-
-// import { useEffect, useRef } from 'react';
-
-// const VideoBackground: React.FC = () => {
-//   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-
-//   useEffect(() => {
-//     videoRefs.current.forEach((video) => {
-//       video?.play().catch((err) => {
-//         console.error('Auto-play was prevented:', err);
-//       });
-//     });
-//   }, []);
-
-//   const videoSources = [
-//     '/bg-video.mp4',
-//     // '/1.MP4',
-//     // '/2.MP4',
-//     // '/3.MP4',
-//     // '/4.MP4',
-//   ];
-
-//   return (
-//     <div className="relative w-full min-h-screen overflow-hidden flex items-center justify-center">
-//       {/* Grid of videos */}
-//       <div className="absolute inset-0 grid grid-cols-1 w-full h-full z-[-1]">
-//         {videoSources.map((src, idx) => (
-//           <video
-//             key={idx}
-//             ref={(el) => {
-//               videoRefs.current[idx] = el;
-//             }}
-//             src={src}
-//             muted
-//             loop
-//             playsInline
-//             autoPlay
-//             preload="auto"
-//             className="w-full h-full object-cover"
-//           />
-//         ))}
-//         {/* <video src={"/bg-video.mp4"} muted loop playsInline autoPlay preload="auto" className="w-full h-full object-cover" /> */}
-//       </div>
-
-//       {/* Overlay */}
-//       <div className="absolute inset-0 bg-black/40" />
-
-//       {/* Hero Text */}
-//       <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-//         <h1 className="text-4xl sm:text-5xl font-extrabold mb-6 text-white drop-shadow-lg animate-fadein">
-//           Welcome to <span>CineVisualStudios</span>
-//         </h1>
-//         <p className="text-lg sm:text-xl text-white/80 font-medium animate-fadein [animation-delay:0.3s]">
-//           Experience the magic of motion and design
-//         </p>
-//       </div>
-
-//       <style>
-//         {`
-//           @keyframes fadein {
-//             from { opacity: 0; transform: translateY(16px);}
-//             to { opacity: 1; transform: translateY(0);}
-//           }
-//           .animate-fadein {
-//             animation: fadein 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
-//           }
-//         `}
-//       </style>
-//     </div>
-//   );
-// };
-
-// export default VideoBackground;
-
-
-'use client';
+"use client";
 
 import { useEffect, useRef, useState } from 'react';
 
 const VideoBackground: React.FC = () => {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [particles, setParticles] = useState<Array<{
+    left: string;
+    top: string;
+    animationDelay: string;
+    animationDuration: string;
+  }>>([]);
 
   useEffect(() => {
+    const cleanupFunctions: (() => void)[] = [];
+    
     videoRefs.current.forEach((video) => {
-      video?.play().catch((err) => {
-        console.error('Auto-play was prevented:', err);
-      });
+      if (video) {
+        // Add event listener to restart video after 5 seconds
+        const handleTimeUpdate = () => {
+          if (video.currentTime >= 12) {
+            video.currentTime = 0;
+          }
+        };
+        
+        // Add event listener for when video ends (fallback)
+        const handleEnded = () => {
+          video.currentTime = 0;
+          video.play().catch(console.error);
+        };
+        
+        // Wait for video to load before adding listeners
+        const handleLoadedData = () => {
+          video.addEventListener('timeupdate', handleTimeUpdate);
+          video.addEventListener('ended', handleEnded);
+        };
+        
+        if (video.readyState >= 2) {
+          // Video is already loaded
+          handleLoadedData();
+        } else {
+          video.addEventListener('loadeddata', handleLoadedData);
+        }
+        
+        video.play().catch((err) => {
+          console.error('Auto-play was prevented:', err);
+        });
+        
+        // Store cleanup functions
+        cleanupFunctions.push(() => {
+          video.removeEventListener('timeupdate', handleTimeUpdate);
+          video.removeEventListener('ended', handleEnded);
+          video.removeEventListener('loadeddata', handleLoadedData);
+        });
+      }
     });
+    
+    // Generate particles on client-side only to avoid hydration mismatch
+    const particleData = Array.from({ length: 20 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      animationDuration: `${3 + Math.random() * 4}s`
+    }));
+    setParticles(particleData);
     
     // Trigger animation after component mounts
     setTimeout(() => setIsLoaded(true), 100);
+    
+    // Return cleanup function
+    return () => {
+      cleanupFunctions.forEach(cleanup => cleanup());
+    };
   }, []);
 
   const videoSources = [
@@ -113,7 +94,6 @@ const VideoBackground: React.FC = () => {
             }}
             src={src}
             muted
-            loop
             playsInline
             autoPlay
             preload="auto"
@@ -131,15 +111,15 @@ const VideoBackground: React.FC = () => {
 
       {/* Animated particles/dots */}
       <div className="absolute inset-0 z-20">
-        {[...Array(20)].map((_, i) => (
+        {particles.map((particle, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white/20 rounded-full animate-float"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
+              left: particle.left,
+              top: particle.top,
+              animationDelay: particle.animationDelay,
+              animationDuration: particle.animationDuration
             }}
           />
         ))}
