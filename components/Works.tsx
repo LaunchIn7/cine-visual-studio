@@ -4,16 +4,22 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 const imageList = [
-  "/work1.jpg",
-  "/work2.jpg",
-  "/work3.jpg",
-  "/work4.jpg",
-  "/work5.jpg",
-  "/work6.jpg",
-  "/work7.jpg",
-  "/work8.jpg",
-  "/work9.jpg",
-  "/work10.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687752/work1_xbajh1.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687755/work2_tmhreb.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687753/work3_t59tbh.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687757/work5_wuah0j.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687755/work6_w6q8il.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687770/work7_arpdtb.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687765/work9_vhqrf0.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687756/work10_jowzfb.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687754/work11_z4ati9.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687759/work12_l30fdv.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687758/work13_xvdiqt.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687762/work14_axjagv.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687756/work15_rs272f.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687755/work16_vz94vq.jpg",
+  "https://res.cloudinary.com/die5nnvda/image/upload/v1753687756/work18_nhtv7o.jpg",
+  // "https://res.cloudinary.com/die5nnvda/image/upload/v1753687754/work19_pandds.jpg",
 ];
 
 const OurWorkGallery = () => {
