@@ -1,81 +1,82 @@
 "use client";
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 const VideoBackground: React.FC = () => {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [particles, setParticles] = useState<Array<{
-    left: string;
-    top: string;
-    animationDelay: string;
-    animationDuration: string;
-  }>>([]);
+  const [particles, setParticles] = useState<
+    Array<{
+      left: string;
+      top: string;
+      animationDelay: string;
+      animationDuration: string;
+    }>
+  >([]);
 
   useEffect(() => {
     const cleanupFunctions: (() => void)[] = [];
-    
+
     videoRefs.current.forEach((video) => {
       if (video) {
         // Add event listener to restart video after 5 seconds
         const handleTimeUpdate = () => {
           if (video.currentTime >= 12) {
-            video.currentTime = 0;
+            video.currentTime = 5;
           }
         };
-        
+
         // Add event listener for when video ends (fallback)
         const handleEnded = () => {
-          video.currentTime = 0;
+          video.currentTime = 5;
           video.play().catch(console.error);
         };
-        
+
         // Wait for video to load before adding listeners
         const handleLoadedData = () => {
-          video.addEventListener('timeupdate', handleTimeUpdate);
-          video.addEventListener('ended', handleEnded);
+          video.addEventListener("timeupdate", handleTimeUpdate);
+          video.addEventListener("ended", handleEnded);
         };
-        
+
         if (video.readyState >= 2) {
           // Video is already loaded
           handleLoadedData();
         } else {
-          video.addEventListener('loadeddata', handleLoadedData);
+          video.addEventListener("loadeddata", handleLoadedData);
         }
-        
+
         video.play().catch((err) => {
-          console.error('Auto-play was prevented:', err);
+          console.error("Auto-play was prevented:", err);
         });
-        
+
         // Store cleanup functions
         cleanupFunctions.push(() => {
-          video.removeEventListener('timeupdate', handleTimeUpdate);
-          video.removeEventListener('ended', handleEnded);
-          video.removeEventListener('loadeddata', handleLoadedData);
+          video.removeEventListener("timeupdate", handleTimeUpdate);
+          video.removeEventListener("ended", handleEnded);
+          video.removeEventListener("loadeddata", handleLoadedData);
         });
       }
     });
-    
+
     // Generate particles on client-side only to avoid hydration mismatch
     const particleData = Array.from({ length: 20 }, () => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       animationDelay: `${Math.random() * 3}s`,
-      animationDuration: `${3 + Math.random() * 4}s`
+      animationDuration: `${3 + Math.random() * 4}s`,
     }));
     setParticles(particleData);
-    
+
     // Trigger animation after component mounts
     setTimeout(() => setIsLoaded(true), 100);
-    
+
     // Return cleanup function
     return () => {
-      cleanupFunctions.forEach(cleanup => cleanup());
+      cleanupFunctions.forEach((cleanup) => cleanup());
     };
   }, []);
 
   const videoSources = [
-    '/bg-video.mp4',
+    "/bg-video.mp4",
     // '/1.MP4',
     // '/2.MP4',
     // '/3.MP4',
@@ -86,28 +87,32 @@ const VideoBackground: React.FC = () => {
     <div className="relative w-full min-h-screen overflow-hidden flex items-center justify-center bg-black">
       {/* Background Video */}
       <div className="absolute inset-0 w-full h-full z-0">
-        {videoSources.map((src, idx) => (
+        {videoSources.map((video, index) => (
           <video
-            key={idx}
-            ref={(el) => {
-              videoRefs.current[idx] = el;
+            key={index}
+            ref={(el: HTMLVideoElement | null) => {
+              videoRefs.current[index] = el;
             }}
-            src={src}
+            src="https://res.cloudinary.com/die5nnvda/video/upload/v1753683067/bg-video_xitarl.mp4"
             muted
             playsInline
             autoPlay
+            loop
+            controls={false}
             preload="auto"
             className="w-full h-full object-cover"
-            style={{
-              filter: 'brightness(0.7) contrast(1.1)',
-            }}
+            style={
+              {
+                // filter: 'brightness(0.99)',
+              }
+            }
           />
         ))}
       </div>
 
       {/* Gradient overlays for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-10" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 z-10" />
 
       {/* Animated particles/dots */}
       <div className="absolute inset-0 z-20">
@@ -119,19 +124,21 @@ const VideoBackground: React.FC = () => {
               left: particle.left,
               top: particle.top,
               animationDelay: particle.animationDelay,
-              animationDuration: particle.animationDuration
+              animationDuration: particle.animationDuration,
             }}
           />
         ))}
       </div>
 
-      {/* Hero Content */}
-      <div className="relative z-30 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto">
+      {/* Hero Content with slight opacity and transition */}
+      <div className="relative z-30 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto transition-all duration-1000 ease-out backdrop-blur-[0.5px]">
         {/* Main title with enhanced styling */}
         <div className="mb-8">
-          <h1 className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 text-white leading-tight transition-all duration-1000 ease-out ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
+          <h1
+            className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 text-white leading-tight transition-all duration-1000 ease-out ${
+              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+          >
             <span className="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent drop-shadow-2xl">
               Cine
             </span>
@@ -146,11 +153,14 @@ const VideoBackground: React.FC = () => {
         </div>
 
         {/* Subtitle with better typography */}
-        <p className={`text-xl sm:text-2xl md:text-3xl text-gray-300 font-light mb-8 max-w-4xl leading-relaxed transition-all duration-1000 ease-out delay-300 ${
-          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
-          Where <span className="text-white font-medium">cinematic storytelling</span> meets{' '}
-          <span className="text-white font-medium">visual artistry</span>
+        <p
+          className={`text-xl sm:text-2xl md:text-3xl text-gray-300 font-light mb-8 max-w-4xl leading-relaxed transition-all duration-1000 ease-out delay-300 ${
+            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          Where{" "}
+          <span className="text-white font-medium">cinematic storytelling</span>{" "}
+          meets <span className="text-white font-medium">visual artistry</span>
         </p>
 
         {/* CTA Buttons */}
@@ -182,24 +192,39 @@ const VideoBackground: React.FC = () => {
 
       <style jsx>{`
         @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
-          50% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; }
+          0%,
+          100% {
+            transform: translateY(0px) rotate(0deg);
+            opacity: 0.2;
+          }
+          50% {
+            transform: translateY(-20px) rotate(180deg);
+            opacity: 0.8;
+          }
         }
-        
+
         @keyframes scroll-down {
-          0% { transform: translateY(0); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateY(48px); opacity: 0; }
+          0% {
+            transform: translateY(0);
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(48px);
+            opacity: 0;
+          }
         }
-        
+
         .animate-float {
           animation: float linear infinite;
         }
-        
+
         .animate-scroll-down {
           animation: scroll-down 2s ease-in-out infinite;
         }
-        
+
         /* Backdrop blur fallback */
         @supports not (backdrop-filter: blur(10px)) {
           .backdrop-blur-sm {
