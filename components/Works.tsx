@@ -152,7 +152,7 @@ const OurWorkGallery = () => {
             <Image
               height={1000}
               width={1000}
-              src={selectedImage}
+              src={`${cloudinaryImageBaseUrl}${selectedImage}`}
               alt="Full size work"
               className="max-w-full max-h-full w-96 object-contain rounded-2xl shadow-2xl"
             />
