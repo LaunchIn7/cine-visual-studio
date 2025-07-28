@@ -105,8 +105,10 @@ const OurWorkGallery = () => {
                 height={1000}
                 width={1000}
                 src={`${cloudinaryImageBaseUrl}${imgSrc}`}
-                alt={`Work ${index + 1}`}
+                alt={`Professional photography work by Rahul Nag - Sydney photographer portfolio image ${index + 1}`}
                 className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
+                loading={index < 6 ? "eager" : "lazy"}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
 
               {/* Overlay */}
@@ -153,8 +155,9 @@ const OurWorkGallery = () => {
               height={1000}
               width={1000}
               src={`${cloudinaryImageBaseUrl}${selectedImage}`}
-              alt="Full size work"
+              alt="Professional photography work by Rahul Nag - Sydney photographer detailed view"
               className="max-w-full max-h-full w-96 object-contain rounded-2xl shadow-2xl"
+              priority
             />
 
             {/* Close button */}
