@@ -33,6 +33,7 @@ const VideoBackground: React.FC = () => {
 
         // Wait for video to load before adding listeners
         const handleLoadedData = () => {
+          video.currentTime = 5; // Set start time to 5 seconds
           video.addEventListener("timeupdate", handleTimeUpdate);
           video.addEventListener("ended", handleEnded);
         };
