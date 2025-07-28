@@ -70,6 +70,7 @@ const ContactSection = memo(() => {
       title: "Phone",
       value: "+61 493 325 512",
       description: "Mon-Fri 9AM-6PM AEST",
+      href: "tel:+61493325512",
     },
     {
       icon: (
@@ -80,6 +81,7 @@ const ContactSection = memo(() => {
       title: "Email",
       value: "rahulnag0299@gmail.com",
       description: "I'll respond within 24 hours",
+      href: "mailto:rahulnag0299@gmail.com",
     },
     {
       icon: (
@@ -91,6 +93,7 @@ const ContactSection = memo(() => {
       title: "Location",
       value: "Sydney, Australia",
       description: "Serving Sydney & beyond",
+      href: "https://www.google.com/maps/place/Sydney,+Australia",
     },
     {
       icon: (
@@ -175,7 +178,13 @@ const ContactSection = memo(() => {
                 {info.icon}
               </div>
               <h3 className="text-white font-semibold mb-2">{info.title}</h3>
-              <p className="text-green-400 font-medium mb-1">{info.value}</p>
+              {info.href ? (
+                <a href={info.href} target="_blank" rel="noopener noreferrer" className="hover:text-green-500 transition-colors duration-300 hover:underline">
+                  <p className="text-green-400 font-medium mb-1">{info.value}</p>
+                </a>
+              ) : (
+                <p className="text-green-400 font-medium mb-1">{info.value}</p>
+              )}
               <p className="text-gray-400 text-sm">{info.description}</p>
             </div>
           ))}
