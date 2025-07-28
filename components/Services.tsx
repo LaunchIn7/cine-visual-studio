@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import Image from "next/image";
+import { getCloudinaryImageBaseUrl } from "@/utils/helpers";
 
 interface ServiceCardProps {
   title: string;
@@ -192,8 +193,8 @@ const ServiceCard = memo<ServiceCardProps>(
 ServiceCard.displayName = "ServiceCard";
 
 // Services data moved outside component for better performance
-const PHOTOGRAPHY_IMAGE = "https://res.cloudinary.com/die5nnvda/image/upload/v1753687743/photography_ouwx8g.jpg";
-const VIDEOGRAPHY_IMAGE = "https://res.cloudinary.com/die5nnvda/image/upload/v1753687742/videography_cgexgz.jpg";
+const PHOTOGRAPHY_IMAGE = "/v1753687743/photography_ouwx8g.jpg";
+const VIDEOGRAPHY_IMAGE = "/v1753687742/videography_cgexgz.jpg";
 const SERVICES_DATA = [
   { title: "Photography", image: PHOTOGRAPHY_IMAGE, delay: 200 },
   { title: "Videography", image: VIDEOGRAPHY_IMAGE, delay: 400 },
@@ -240,6 +241,7 @@ const ServicesHeader = memo(({ isVisible }: { isVisible: boolean }) => (
 ServicesHeader.displayName = "ServicesHeader";
 
 const ServicesSection = memo(() => {
+  const cloudinaryImageBaseUrl = getCloudinaryImageBaseUrl();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -284,7 +286,7 @@ const ServicesSection = memo(() => {
             >
               <ServiceCard
                 title={service.title}
-                image={service.image}
+                image={`${cloudinaryImageBaseUrl}${service.image}`}
                 onPortfolioClick={() => handlePortfolioClick(service.title)}
               />
             </div>
