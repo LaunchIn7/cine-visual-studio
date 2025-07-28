@@ -1,22 +1,30 @@
 "use client";
 
+import { getCloudinaryImageBaseUrl } from "@/utils/helpers";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
 const imageList = [
-  "/work1.jpg",
-  "/work2.jpg",
-  "/work3.jpg",
-  "/work4.jpg",
-  "/work5.jpg",
-  "/work6.jpg",
-  "/work7.jpg",
-  "/work8.jpg",
-  "/work9.jpg",
-  "/work10.jpg",
+  "/v1753687752/work1_xbajh1.jpg",
+  "/v1753687755/work2_tmhreb.jpg",
+  "/v1753687753/work3_t59tbh.jpg",
+  "/v1753687757/work5_wuah0j.jpg",
+  "/v1753687755/work6_w6q8il.jpg",
+  "/v1753687770/work7_arpdtb.jpg",
+  "/v1753687765/work9_vhqrf0.jpg",
+  "/v1753687756/work10_jowzfb.jpg",
+  "/v1753687754/work11_z4ati9.jpg",
+  "/v1753687759/work12_l30fdv.jpg",
+  "/v1753687758/work13_xvdiqt.jpg",
+  "/v1753687762/work14_axjagv.jpg",
+  "/v1753687756/work15_rs272f.jpg",
+  "/v1753687755/work16_vz94vq.jpg",
+  "/v1753687756/work18_nhtv7o.jpg",
+  // "/v1753687754/work19_pandds.jpg",
 ];
 
 const OurWorkGallery = () => {
+  const cloudinaryImageBaseUrl = getCloudinaryImageBaseUrl();
   const [isVisible, setIsVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -96,7 +104,7 @@ const OurWorkGallery = () => {
               <Image
                 height={1000}
                 width={1000}
-                src={imgSrc}
+                src={`${cloudinaryImageBaseUrl}${imgSrc}`}
                 alt={`Work ${index + 1}`}
                 className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
               />

@@ -2,11 +2,13 @@
 
 import { useState, useEffect, memo } from "react";
 import Image from "next/image";
+import { getCloudinaryImageBaseUrl } from "@/utils/helpers";
 
-const PORTRAIT_IMAGE = 'https://res.cloudinary.com/die5nnvda/image/upload/v1753684843/rahul-portrait_juhupj.jpg';
-const ABOUT_HERO = 'https://res.cloudinary.com/die5nnvda/image/upload/v1753684867/about-hero_fiea5g.jpg';
+const PORTRAIT_IMAGE = "/v1753684843/rahul-portrait_juhupj.jpg";
+const ABOUT_HERO = "/v1753684867/about-hero_fiea5g.jpg";
 
 const AboutSection = memo(() => {
+  const cloudinaryImageBaseUrl = getCloudinaryImageBaseUrl();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ const AboutSection = memo(() => {
           >
             <div className="relative">
               <Image
-                src={ABOUT_HERO}
+                src={`${cloudinaryImageBaseUrl}${ABOUT_HERO}`}
                 alt="Rahul Nag - Photographer"
                 width={600}
                 height={400}
@@ -229,7 +231,7 @@ const AboutSection = memo(() => {
 
             <div className="relative">
               <Image
-                src={PORTRAIT_IMAGE}
+                src={`${cloudinaryImageBaseUrl}${PORTRAIT_IMAGE}`}
                 alt="Rahul Nag - Photographer"
                 width={500}
                 height={600}
