@@ -132,7 +132,7 @@ const VideoBackground: React.FC = () => {
       </div>
 
       {/* Hero Content with slight opacity and transition */}
-      <div className="relative z-30 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto transition-all duration-1000 ease-out backdrop-blur-[0.5px]">
+      <div className="relative z-30 flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto transition-all duration-1000 ease-out backdrop-blur-[1.5px]">
         {/* Main title with enhanced styling */}
         <div className="mb-8">
           <h1
