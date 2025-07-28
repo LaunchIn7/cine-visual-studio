@@ -1,9 +1,15 @@
 "use client";
+import { getCloudinaryVideoBaseUrl } from "@/utils/helpers";
 import { useEffect, useRef, useState } from "react";
 
+const largeMediumScreenVideoSource = "v1753683067/bg-video_xitarl.mp4";
+const smallScreenVideoSource = "v1753690681/1_yku9df.mp4";
+
 const VideoBackground: React.FC = () => {
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const cloudinaryVideoBaseUrl = getCloudinaryVideoBaseUrl();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [particles, setParticles] = useState<
     Array<{
       left: string;
@@ -13,49 +19,51 @@ const VideoBackground: React.FC = () => {
     }>
   >([]);
 
+  // Check screen size on mount and resize
   useEffect(() => {
-    const cleanupFunctions: (() => void)[] = [];
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
 
-    videoRefs.current.forEach((video) => {
-      if (video) {
-        // Add event listener to restart video after 5 seconds
-        const handleTimeUpdate = () => {
-          if (video.currentTime >= 12) {
-            video.currentTime = 5;
-          }
-        };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
 
-        // Add event listener for when video ends (fallback)
-        const handleEnded = () => {
-          video.currentTime = 5;
-          video.play().catch(console.error);
-        };
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
-        // Wait for video to load before adding listeners
-        const handleLoadedData = () => {
-          video.currentTime = 5; // Set start time to 5 seconds
-          video.addEventListener("timeupdate", handleTimeUpdate);
-          video.addEventListener("ended", handleEnded);
-        };
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-        if (video.readyState >= 2) {
-          // Video is already loaded
-          handleLoadedData();
-        } else {
-          video.addEventListener("loadeddata", handleLoadedData);
-        }
-
-        video.play().catch((err) => {
-          console.error("Auto-play was prevented:", err);
-        });
-
-        // Store cleanup functions
-        cleanupFunctions.push(() => {
-          video.removeEventListener("timeupdate", handleTimeUpdate);
-          video.removeEventListener("ended", handleEnded);
-          video.removeEventListener("loadeddata", handleLoadedData);
-        });
+    // Add event listener to restart video after 5 seconds
+    const handleTimeUpdate = () => {
+      if (video.currentTime >= 12) {
+        video.currentTime = 5;
       }
+    };
+
+    // Add event listener for when video ends (fallback)
+    const handleEnded = () => {
+      video.currentTime = 5;
+      video.play().catch(console.error);
+    };
+
+    // Wait for video to load before adding listeners
+    const handleLoadedData = () => {
+      video.currentTime = 5; // Set start time to 5 seconds
+      video.addEventListener("timeupdate", handleTimeUpdate);
+      video.addEventListener("ended", handleEnded);
+    };
+
+    if (video.readyState >= 2) {
+      // Video is already loaded
+      handleLoadedData();
+    } else {
+      video.addEventListener("loadeddata", handleLoadedData);
+    }
+
+    video.play().catch((err) => {
+      console.error("Auto-play was prevented:", err);
     });
 
     // Generate particles on client-side only to avoid hydration mismatch
@@ -70,45 +78,34 @@ const VideoBackground: React.FC = () => {
     // Trigger animation after component mounts
     setTimeout(() => setIsLoaded(true), 100);
 
-    // Return cleanup function
+    // Cleanup function
     return () => {
-      cleanupFunctions.forEach((cleanup) => cleanup());
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("loadeddata", handleLoadedData);
     };
   }, []);
-
-  const videoSources = [
-    "/bg-video.mp4",
-    // '/1.MP4',
-    // '/2.MP4',
-    // '/3.MP4',
-    // '/4.MP4',
-  ];
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex items-center justify-center bg-black">
       {/* Background Video */}
       <div className="absolute inset-0 w-full h-full z-0">
-        {videoSources.map((video, index) => (
-          <video
-            key={index}
-            ref={(el: HTMLVideoElement | null) => {
-              videoRefs.current[index] = el;
-            }}
-            src="https://res.cloudinary.com/die5nnvda/video/upload/v1753683067/bg-video_xitarl.mp4"
-            muted
-            playsInline
-            autoPlay
-            loop
-            controls={false}
-            preload="auto"
-            className="w-full h-full object-cover"
-            style={
-              {
-                // filter: 'brightness(0.99)',
-              }
+        <video
+          ref={videoRef}
+          src={`${cloudinaryVideoBaseUrl}${isMobile ? smallScreenVideoSource : largeMediumScreenVideoSource}`}
+          muted
+          playsInline
+          autoPlay
+          loop
+          controls={false}
+          preload="auto"
+          className="w-full h-full object-cover"
+          style={
+            {
+              // filter: 'brightness(0.99)',
             }
-          />
-        ))}
+          }
+        />
       </div>
 
       {/* Gradient overlays for depth */}
