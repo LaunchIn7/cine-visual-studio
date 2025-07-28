@@ -20,11 +20,11 @@ const nextConfig: NextConfig = {
   // Optimize for SEO
   poweredByHeader: false,
   
-  // Enable experimental features for better performance
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['@tailwindcss/postcss'],
-  },
+  // // Enable experimental features for better performance
+  // experimental: {
+  //   optimizeCss: true,
+  //   optimizePackageImports: ['@tailwindcss/postcss'],
+  // },
   
   // Headers for SEO and security
   async headers() {
